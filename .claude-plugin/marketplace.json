@@ -1,0 +1,17 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "comment-on-pr",
+  "description": "Review a GitHub PR and post inline review comments under your own identity.",
+  "owner": {
+    "name": "Jack Parker",
+    "url": "https://github.com/jackmparker"
+  },
+  "plugins": [
+    {
+      "name": "comment-on-pr",
+      "description": "Review a GitHub PR and post a short set of high-value inline comments, shown to you before anything is posted.",
+      "source": "./",
+      "category": "code-review"
+    }
+  ]
+}
