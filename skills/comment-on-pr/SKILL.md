@@ -1,14 +1,14 @@
 ---
 name: comment-on-pr
-description: Use when given a GitHub PR link and asked to review it and leave, post, or drop inline comments on it, to approve it, or to comment on a teammate's PR for the user.
+description: Use when given a GitHub PR link and asked to review it and leave, post, or drop comments on it, to approve it, or to comment on a teammate's PR for the user.
 ---
 
 # Comment on a PR
 
 ## Overview
 
-Review a GitHub PR and post inline review comments under the user's identity. The output is a
-short set of high-value inline comments, shown to the user before anything is posted.
+Review a GitHub PR and post review comments on specific lines under the user's identity. The output is a
+short set of high-value comments, shown to the user before anything is posted.
 
 These comments land on a teammate's work, signed as the user. Volume and confidence both cost
 the user credibility. Fewer, verified, friendly comments beat thorough ones.
@@ -68,8 +68,8 @@ ticket they can't move. If you're not recommending approval, say which finding i
 
 ## The approval body
 
-A review has exactly two kinds of text: the inline comments, and one short approval line. There
-is no summary paragraph. The inline comments carry the substance; the approval body is a
+A review has exactly two kinds of text: the line comments, and one short approval line. There
+is no summary paragraph. The line comments carry the substance; the approval body is a
 thumbs-up, not a recap.
 
 Short and casual. One line, usually under 12 words.
@@ -77,18 +77,21 @@ Short and casual. One line, usually under 12 words.
 - **Clean PR** — "LGTM", "Looks good 👍", "Nice, LGTM", "All looks good to me", "LGTM, thanks!"
 - **Approving alongside comments** — acknowledge them in passing and approve anyway: "Just a
   couple of small things but otherwise looks good!", "Left a few notes, nothing blocking — LGTM",
-  "A couple of suggestions inline, but happy with this", "Small comments, otherwise LGTM".
+  "A couple of suggestions, but happy with this", "Small comments, otherwise LGTM".
 
 Vary it. The user leaves these across many PRs and the same string every time reads like a bot.
 Pick a different phrasing than the last approval; the lists above are examples of the register,
 not a rotation to cycle through.
 
-Never in an approval body: a recap of what the PR does, a restatement of the inline findings, a
+Do not say "inline" in the body (or in the comments). The reader is looking at the comments; say
+"left a few notes" or "a couple of comments", not "inline".
+
+Never in an approval body: a recap of what the PR does, a restatement of the findings, a
 list of what you checked, praise paragraphs, or "these are just suggestions" caveats. If it
-needs more than a line, it belongs in an inline comment.
+needs more than a line, it belongs in a line comment.
 
 When the user holds approval, the `COMMENT` review still needs a body (the API requires one for
-`COMMENT` and `REQUEST_CHANGES`). Same register, one line — "A few notes inline", "Couple of
+`COMMENT` and `REQUEST_CHANGES`). Same register, one line — "Left a few notes", "Couple of
 things worth a look before this goes in". Still not a summary.
 
 ## What each comment is
@@ -167,7 +170,7 @@ longer what merging would ship.
 and no `comments` key at all.
 
 **Approve with comments** — one review, not two. Create it pending (omit `event`), then submit
-it as the approval so the inline comments and the approval line ship together in a single
+it as the approval so the line comments and the approval line ship together in a single
 notification:
 
 ```jsonc
@@ -213,7 +216,7 @@ Report the review URL and the state back to the user.
 | Demoting a real finding to the summary to keep the list short | Comment on everything that clears the bar |
 | Comments longer than a few sentences | What breaks, then the fix. Under 50 words. Cut the rest. |
 | A paragraph in the approval body | One casual line — "LGTM", "Small comments, otherwise looks good!" |
-| Writing a summary body for the review | There isn't one. Inline comments + one approval line, nothing else. |
+| Writing a summary body for the review | There isn't one. Line comments + one approval line, nothing else. |
 | The same approval wording as last time | Vary the phrasing; identical strings read as automated |
 | Using diff position for `line` | File line at the head commit, `side: "RIGHT"` |
 | Reviewing the diff alone | Read the file and its spec at the head commit |

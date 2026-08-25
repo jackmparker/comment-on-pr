@@ -1,6 +1,6 @@
 # comment-on-pr
 
-A Claude Code skill for reviewing a GitHub PR and posting inline review comments **under your own
+A Claude Code skill for reviewing a GitHub PR and posting review comments **under your own
 identity** — with a high bar for what earns a comment and a hard stop for your approval before
 anything is posted.
 
@@ -49,16 +49,16 @@ Paste a PR link and ask for a review:
 Or just say it in your own words — "review this PR and leave comments:
 `https://github.com/owner/repo/pull/123`".
 
-You'll get back a draft: the inline comments with their file and line, an approval recommendation,
+You'll get back a draft: the comments with their file and line, an approval recommendation,
 and a note on anything that was deliberately left off the PR. Reply yes and it posts as a single
-review — inline comments and the approval line in one notification.
+review — line comments and the approval line in one notification.
 
 ## What it will not do
 
 - Post anything you haven't read.
 - Pad the comment list to look thorough.
 - Send `REQUEST_CHANGES` unless you explicitly ask for it.
-- Write a summary paragraph on the review. The inline comments carry the substance; the approval
+- Write a summary paragraph on the review. The line comments carry the substance; the approval
   body is one short line.
 
 ## License
