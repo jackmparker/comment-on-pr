@@ -1,6 +1,6 @@
 {
   "name": "comment-on-pr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Review a GitHub PR and post review comments under your own identity. High bar for what earns a comment, a mandatory draft-before-post gate, and approval treated as a separate decision.",
   "author": {
     "name": "Jack Parker",
