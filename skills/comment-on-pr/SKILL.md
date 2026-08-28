@@ -83,6 +83,8 @@ Vary it. The user leaves these across many PRs and the same string every time re
 Pick a different phrasing than the last approval; the lists above are examples of the register,
 not a rotation to cycle through.
 
+No em dashes anywhere in posted text (body or comments). Use a comma, colon, or period instead.
+
 Do not say "inline" in the body (or in the comments). The reader is looking at the comments; say
 "left a few notes" or "a couple of comments", not "inline".
 
