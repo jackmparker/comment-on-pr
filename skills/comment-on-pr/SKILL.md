@@ -1,6 +1,6 @@
 ---
 name: comment-on-pr
-description: Use when given a GitHub PR link and asked to review it and leave, post, or drop comments on it, to approve it, or to comment on a teammate's PR for the user.
+description: Use when given a GitHub PR link and asked to review it and leave, post, or drop comments on it, to approve it, or to comment on a teammate's PR for the user. Also use with no link when asked to review everything waiting on the user ("needs my review", "review my queue", "review all my requested PRs").
 ---
 
 # Comment on a PR
@@ -12,6 +12,9 @@ short set of high-value comments, shown to the user before anything is posted.
 
 These comments land on a teammate's work, signed as the user. Volume and confidence both cost
 the user credibility. Fewer, verified, friendly comments beat thorough ones.
+
+With no PR link and a request to review the queue, use *Batch mode* at the end. Every rule
+below still applies to each PR in the batch.
 
 ## Gather
 
@@ -206,6 +209,57 @@ fails, say so rather than reporting the review as posted.
 
 Report the review URL and the state back to the user.
 
+## Batch mode
+
+For "review everything that needs my review" with no link. Same bar, same gate, many PRs.
+
+**Find the queue:**
+
+```bash
+gh search prs --review-requested=@me --state=open --limit 50 \
+  --json url,number,title,repository,author,isDraft
+```
+
+This matches the GitHub "Needs your review" filter, team requests included. Skip drafts. Then
+size each PR so you know which diffs are large:
+
+```bash
+gh pr view <url> --json additions,deletions,changedFiles,headRefName,headRefOid
+```
+
+Tell the user the list (number, title, author, file count) in one short table, then start. A
+read-only review needs no go-ahead.
+
+**Review in parallel.** One subagent per PR, all launched in one message, in the background.
+Each prompt carries the full bar from *What earns a comment*, the comment format from *What
+each comment is*, and the *Confidence* rules. Tell each subagent:
+
+- Do not post, approve, or comment on GitHub. Read-only.
+- Do not check out branches or touch the user's working tree. Read code with `git show
+  origin/<headRefName>:<path>` after a fetch, or with `gh api .../contents`.
+- `gh pr diff` fails above 300 changed files. For those, build the diff locally from the merge
+  base (`git diff $(git merge-base origin/<base> origin/<head>) origin/<head>`).
+- Return: findings (path, head-commit line inside a hunk, comment body), an approval
+  recommendation, the `headRefOid` it reviewed, and one line on what it checked.
+
+Give each subagent the risks specific to its PR (for example, a lint-fix PR: what mechanical
+change could alter runtime behavior). Generic prompts get generic reviews.
+
+**Report as results arrive.** Show each PR's draft when its subagent returns, with a running
+"N of M ready" line. Subagent reports are drafts for you to check, not text to post as is.
+Apply the bar again; cut anything that fails it.
+
+**Final draft.** When all are back, show one table: PR, title, line comments (verbatim), and
+the approval body. Vary the approval body across PRs; eight identical "LGTM"s read as a bot.
+List any caveat under the table (a PR the author plans to rebuild, two PRs that will conflict).
+
+**Post gate.** One explicit yes can cover the whole table ("post all 8"), or the user names
+PRs to skip or change. Post only the set the user approved.
+
+**Before posting**, re-read every `headRefOid` and compare it with the commit each subagent
+reviewed. If one changed, do not post that PR. Say so, and offer to review it again. Post the
+rest as normal (see *Posting*), then report one table with each review URL and state.
+
 ## Common mistakes
 
 | Mistake | Fix |
@@ -223,3 +277,5 @@ Report the review URL and the state back to the user.
 | Using diff position for `line` | File line at the head commit, `side: "RIGHT"` |
 | Reviewing the diff alone | Read the file and its spec at the head commit |
 | Asserting an unexecuted repro | Run it, or mark it as reasoned from source |
+| Batch: posting a PR whose head moved after review | Re-check `headRefOid` for every PR right before posting |
+| Batch: a subagent posts on its own | Every subagent prompt says read-only; only you post, after the yes |
