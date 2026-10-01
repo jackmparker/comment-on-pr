@@ -1,6 +1,6 @@
 ---
 name: comment-on-pr
-description: Use when given a GitHub PR link and asked to review it and leave, post, or drop comments on it, to approve it, or to comment on a teammate's PR for the user. Also use with no link when asked to review everything waiting on the user ("needs my review", "review my queue", "review all my requested PRs").
+description: Use when given a GitHub PR link and asked to review it and leave, post, or drop comments on it, to approve it, or to comment on a teammate's PR for the user. Also use when invoked with no arguments or no PR link, or when asked to review everything waiting on the user ("needs my review", "review my queue"): that reviews the whole queue.
 ---
 
 # Comment on a PR
@@ -13,8 +13,9 @@ short set of high-value comments, shown to the user before anything is posted.
 These comments land on a teammate's work, signed as the user. Volume and confidence both cost
 the user credibility. Fewer, verified, friendly comments beat thorough ones.
 
-With no PR link and a request to review the queue, use *Batch mode* at the end. Every rule
-below still applies to each PR in the batch.
+A PR link means review that one PR. No arguments, or no PR link, means *Batch mode* (at the
+end): review every PR waiting on the user. Do not ask for a link. Every rule below still
+applies to each PR in the batch.
 
 ## Gather
 
@@ -211,7 +212,7 @@ Report the review URL and the state back to the user.
 
 ## Batch mode
 
-For "review everything that needs my review" with no link. Same bar, same gate, many PRs.
+For a run with no arguments or no PR link. Same bar, same gate, many PRs.
 
 **Find the queue:**
 

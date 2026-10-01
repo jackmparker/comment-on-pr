@@ -55,10 +55,10 @@ review — line comments and the approval line in one notification.
 
 ### Review your whole queue
 
-Skip the link to review every open PR waiting on you (GitHub's "Needs your review"):
+Run it with no link to review every open PR waiting on you (GitHub's "Needs your review"):
 
 ```
-/comment-on-pr review everything that needs my review
+/comment-on-pr
 ```
 
 It finds the PRs, reviews them in parallel, and shows each draft as it finishes. One reply
