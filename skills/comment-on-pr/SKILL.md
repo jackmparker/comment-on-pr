@@ -29,6 +29,9 @@ Read surrounding code, not just the diff — a local checkout (`git fetch origin
 then `git show origin/<headRefName>:<path>`) or `gh api repos/<owner>/<repo>/contents/<path>?ref=<branch>`.
 Read the spec file when there is one — it's for checking your claims, not for auditing coverage.
 
+**Read the repo's styling rules when the PR touches anything visual** (stylesheets, templates,
+theme files, design-system components). See *The styling hard line* below for which docs.
+
 ## What earns a comment
 
 One test: **would this break something for a real user, or lose real data?** A wrong value, a
@@ -48,6 +51,39 @@ Below the bar — leave these out entirely:
 Most PRs produce zero comments, and zero is a complete review. One or two is a busy PR. If you
 have four, the bar slipped — re-check each one against the test above and cut what fails. Never
 pad toward a number to look thorough.
+
+## The styling hard line
+
+One exception to the test above. Some repos document a theme or design system: tokens or roles
+that every color, radius and shadow must read, a rule that no style keys on light or dark mode,
+a rule that UI belongs in a shared component library. **A change that breaks one of those
+documented rules always earns a comment**, even when the page looks fine today. The rule exists
+because the drift is invisible until someone audits it, and a review is that audit.
+
+**Find the rules.** Read them fresh on every review, at the PR's base branch, because they change:
+
+1. Check `references/` next to this skill for a file that covers the repo. If one does, read
+   every doc it lists, in full, and use its checklist. For ObservePoint (`observepoint/moonbeam`,
+   `observepoint/op-component-library`) that is `references/observepoint-theming.md`.
+2. Otherwise read the styling docs the repo points to itself: `CLAUDE.md`, `AGENTS.md`,
+   `CONTRIBUTING.md`, and any `docs/` file about theming, tokens, design system or styling.
+3. No documented rules means no hard line. Fall back to the normal bar.
+
+**What it covers.** Only lines the PR adds or changes, and only rules a doc states. Old
+violations the PR does not touch are not this PR's problem. Check the docs' own list of
+deliberate exceptions before commenting (pages kept off the theme on purpose, fixed hues).
+
+**How to write it.** Same format as any comment: what is wrong, then the fix, under 50 words.
+Name the token or component to use and the doc that states the rule. When one file repeats the
+same violation, write one comment on the first line and list the other lines in it.
+
+> `#333` is a raw color, so this text stays dark gray in dark mode. Use
+> `var(--op-text-primary)`? (Theming section of `docs/code-conventions.md`)
+
+**What it does not change.** Styling comments do not count toward the "four means the bar
+slipped" check. Code style (naming, formatting, import order) is still below the bar; this
+covers theme and design-system rules only. Styling findings alone are approve-with-comments,
+not a reason to hold approval.
 
 ## The verdict
 
@@ -233,7 +269,9 @@ read-only review needs no go-ahead.
 
 **Review in parallel.** One subagent per PR, all launched in one message, in the background.
 Each prompt carries the full bar from *What earns a comment*, the comment format from *What
-each comment is*, and the *Confidence* rules. Tell each subagent:
+each comment is*, and the *Confidence* rules. When the PR touches anything visual, the prompt
+also carries *The styling hard line* in full, with the absolute path of the matching
+`references/` file so the subagent reads every doc it lists. Tell each subagent:
 
 - Do not post, approve, or comment on GitHub. Read-only.
 - Do not check out branches or touch the user's working tree. Read code with `git show
@@ -267,7 +305,10 @@ rest as normal (see *Posting*), then report one table with each review URL and s
 |---|---|
 | Comments that don't clear the bar, added for coverage | Cut them. A zero-comment review is fine. |
 | A "consider extracting / could be cleaner" comment | Not a finding. Cut it. |
-| Four or more comments on one PR | The bar slipped. Re-test each against "what breaks?" |
+| Four or more comments on one PR | The bar slipped. Re-test each against "what breaks?" (styling comments do not count) |
+| Skipping a raw color, a mode-keyed selector or a one-off control because "it looks fine" | Documented theme rules are a hard line. Comment, name the token or component and the doc. |
+| Reviewing styling from memory | Read the repo's theme docs at the base branch on every review; they change |
+| Flagging a styling violation the PR did not add | Only added or changed lines. Check the docs' list of deliberate exceptions first. |
 | Withholding approval on a PR with nothing wrong | Propose `APPROVE`. Good enough is a verdict. |
 | Showing a comment draft with no approval recommendation | Every draft says approve or names why not |
 | Demoting a real finding to the summary to keep the list short | Comment on everything that clears the bar |
